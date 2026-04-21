@@ -1,3 +1,5 @@
+import { cn } from "../lib/utils";
+
 interface MetricsSelectorProps {
   availableMetrics: string[];
   selectedMetrics: string[];
@@ -32,20 +34,31 @@ export function MetricsSelector({
   };
 
   return (
-    <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-      <h3>メトリクス選択</h3>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-        {availableMetrics.map((metric) => (
-          <label key={metric} style={{ display: "flex", alignItems: "center" }}>
-            <input
-              type="checkbox"
-              checked={selectedMetrics.includes(metric)}
-              onChange={() => handleToggle(metric)}
-              style={{ marginRight: "5px" }}
-            />
-            {metricLabels[metric] || metric}
-          </label>
-        ))}
+    <div className="my-6">
+      <h3 className="text-lg font-medium mb-3">メトリクス選択</h3>
+      <div className="flex flex-wrap gap-3">
+        {availableMetrics.map((metric) => {
+          const isSelected = selectedMetrics.includes(metric);
+          return (
+            <label
+              key={metric}
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-md border cursor-pointer transition-colors text-sm",
+                isSelected
+                  ? "bg-blue-50 border-blue-200 text-blue-700"
+                  : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50",
+              )}
+            >
+              <input
+                type="checkbox"
+                className="hidden"
+                checked={isSelected}
+                onChange={() => handleToggle(metric)}
+              />
+              {metricLabels[metric] || metric}
+            </label>
+          );
+        })}
       </div>
     </div>
   );

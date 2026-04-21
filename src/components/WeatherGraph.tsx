@@ -19,14 +19,14 @@ interface WeatherGraphProps {
 }
 
 const COLORS = [
-  "#8884d8",
-  "#82ca9d",
-  "#ffc658",
-  "#ff7c7c",
-  "#8dd1e1",
-  "#d084d0",
-  "#82d982",
-  "#ffa500",
+  "#2563eb", // blue-600
+  "#16a34a", // green-600
+  "#d97706", // amber-600
+  "#dc2626", // red-600
+  "#0891b2", // cyan-600
+  "#9333ea", // purple-600
+  "#ea580c", // orange-600
+  "#0d9488", // teal-600
 ];
 
 const metricLabels: Record<string, string> = {
@@ -45,7 +45,11 @@ const precipitationMetrics = ["total_precipitation", "max_10min_precipitation"];
 
 export function WeatherGraph({ data, selectedMetrics }: WeatherGraphProps) {
   if (selectedMetrics.length === 0) {
-    return <p>グラフを表示するメトリクスを選択してください</p>;
+    return (
+      <div className="flex items-center justify-center h-48 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+        <p className="text-gray-500">グラフを表示するメトリクスを選択してください</p>
+      </div>
+    );
   }
 
   // データを変換: nullチェックと数値化
@@ -74,80 +78,145 @@ export function WeatherGraph({ data, selectedMetrics }: WeatherGraphProps) {
   const labelInterval = Math.max(1, Math.floor(transformedData.length / 12));
 
   return (
-    <div style={{ marginTop: "30px" }}>
+    <div className="space-y-12">
       {tempMetrics.length > 0 && (
-        <div style={{ marginBottom: "40px" }}>
-          <h3>気温推移</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={transformedData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="dateStr" interval={labelInterval} />
-              <YAxis label={{ value: "気温 (℃)", angle: -90, position: "insideLeft" }} />
-              <Tooltip />
-              <Legend />
-              {tempMetrics.map((metric, idx) => (
-                <Line
-                  key={metric}
-                  type="monotone"
-                  dataKey={metric}
-                  stroke={COLORS[idx % COLORS.length]}
-                  name={metricLabels[metric] || metric}
-                  dot={false}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">気温推移</h3>
+          <div className="h-[350px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="dateStr"
+                  interval={labelInterval}
+                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tickMargin={10}
                 />
-              ))}
-              <Brush dataKey="dateStr" height={30} stroke="#8884d8" fill="#f0f0f0" />
-            </LineChart>
-          </ResponsiveContainer>
+                <YAxis
+                  label={{
+                    value: "気温 (℃)",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "#6b7280",
+                    offset: -5,
+                  }}
+                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                    boxShadow: "none",
+                  }}
+                />
+                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                {tempMetrics.map((metric, idx) => (
+                  <Line
+                    key={metric}
+                    type="monotone"
+                    dataKey={metric}
+                    stroke={COLORS[idx % COLORS.length]}
+                    strokeWidth={1}
+                    name={metricLabels[metric] || metric}
+                    dot={false}
+                    activeDot={{ r: 6 }}
+                  />
+                ))}
+                <Brush dataKey="dateStr" height={30} stroke="#cbd5e1" fill="#f8fafc" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
 
       {precipMetrics.length > 0 && (
-        <div style={{ marginBottom: "40px" }}>
-          <h3>降水量</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={transformedData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="dateStr" interval={labelInterval} />
-              <YAxis label={{ value: "降水量 (mm)", angle: -90, position: "insideLeft" }} />
-              <Tooltip />
-              <Legend />
-              {precipMetrics.map((metric, idx) => (
-                <Bar
-                  key={metric}
-                  dataKey={metric}
-                  fill={COLORS[tempMetrics.length + idx]}
-                  name={metricLabels[metric] || metric}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">降水量</h3>
+          <div className="h-[350px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="dateStr"
+                  interval={labelInterval}
+                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tickMargin={10}
                 />
-              ))}
-              <Brush dataKey="dateStr" height={30} stroke="#82ca9d" fill="#f0f0f0" />
-            </BarChart>
-          </ResponsiveContainer>
+                <YAxis
+                  label={{
+                    value: "降水量 (mm)",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "#6b7280",
+                    offset: -5,
+                  }}
+                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                />
+                <Tooltip
+                  cursor={{ fill: "#f3f4f6" }}
+                  contentStyle={{
+                    borderRadius: "8px",
+                    border: "none",
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                  }}
+                />
+                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                {precipMetrics.map((metric, idx) => (
+                  <Bar
+                    key={metric}
+                    dataKey={metric}
+                    fill={COLORS[(tempMetrics.length + idx) % COLORS.length]}
+                    radius={[4, 4, 0, 0]}
+                    name={metricLabels[metric] || metric}
+                  />
+                ))}
+                <Brush dataKey="dateStr" height={30} stroke="#cbd5e1" fill="#f8fafc" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
 
       {otherMetrics.length > 0 && (
-        <div style={{ marginBottom: "40px" }}>
-          <h3>その他のメトリクス</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={transformedData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="dateStr" interval={labelInterval} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              {otherMetrics.map((metric, idx) => (
-                <Line
-                  key={metric}
-                  type="monotone"
-                  dataKey={metric}
-                  stroke={COLORS[tempMetrics.length + precipMetrics.length + idx]}
-                  name={metricLabels[metric] || metric}
-                  dot={false}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">その他のメトリクス</h3>
+          <div className="h-[350px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="dateStr"
+                  interval={labelInterval}
+                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tickMargin={10}
                 />
-              ))}
-              <Brush dataKey="dateStr" height={30} stroke="#ffc658" fill="#f0f0f0" />
-            </LineChart>
-          </ResponsiveContainer>
+                <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                    boxShadow: "none",
+                  }}
+                />
+                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                {otherMetrics.map((metric, idx) => (
+                  <Line
+                    key={metric}
+                    type="monotone"
+                    dataKey={metric}
+                    stroke={
+                      COLORS[(tempMetrics.length + precipMetrics.length + idx) % COLORS.length]
+                    }
+                    strokeWidth={1}
+                    name={metricLabels[metric] || metric}
+                    dot={false}
+                    activeDot={{ r: 6 }}
+                  />
+                ))}
+                <Brush dataKey="dateStr" height={30} stroke="#cbd5e1" fill="#f8fafc" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
     </div>

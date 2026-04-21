@@ -1,16 +1,16 @@
 import { useRef, useState } from "react";
 import "./App.css";
 import { transformAndValidateWeather } from "./lib/translator";
-import { MetricsSelector } from "./components/MetricsSelector";
-import { WeatherGraph } from "./components/WeatherGraph";
 import type { WeatherJsonOutput } from "./schema/json";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import { WeatherResultView } from "./components/WeatherResultView";
 
 function App() {
   const csvRef = useRef<HTMLInputElement>(null);
   const [result, setResult] = useState<WeatherJsonOutput | null>(null);
   const [error, setError] = useState("");
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
-  const [showJson, setShowJson] = useState(true);
 
   const handleClick = () => {
     const file = csvRef.current?.files?.[0];
@@ -26,17 +26,14 @@ function App() {
         const jsonData = transformAndValidateWeather(csvString);
         setResult(jsonData);
         setError("");
-        setSelectedMetrics([]); // リセット
       } catch (err) {
         setError(err instanceof Error ? err.message : "エラーが発生しました");
         setResult(null);
-        setSelectedMetrics([]);
       }
     };
     reader.onerror = () => {
       setError("ファイルの読み込みに失敗しました");
       setResult(null);
-      setSelectedMetrics([]);
     };
     reader.readAsText(file, "Shift_JIS");
   };
@@ -56,84 +53,43 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  const getAvailableMetrics = () => {
-    if (!result || result.data.length === 0) return [];
-    const metricsSet = new Set<string>();
-    Object.keys(result.data[0]).forEach((key) => {
-      if (key !== "date") {
-        metricsSet.add(key);
-      }
-    });
-    return Array.from(metricsSet);
-  };
-
   return (
-    <>
-      <div style={{ padding: "20px" }}>
-        <h1>JMA CSV to JSON 変換ツール</h1>
-        <div style={{ marginBottom: "20px" }}>
-          <input
-            type="file"
-            name="csv"
-            id="csv"
-            ref={csvRef}
-            accept=".csv"
-            style={{ marginRight: "10px" }}
-          />
-          <button onClick={handleClick}>読み込む</button>
-        </div>
+    <div className="min-h-screen bg-gray-50 text-gray-900 p-6 font-sans">
+      <div className="max-w-5xl mx-auto space-y-6">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+            JMA CSV to JSON 変換ツール
+          </h1>
+          <p className="text-gray-500 mt-2">
+            気象庁の過去の気象データ(CSV)をJSONに変換し、グラフで可視化します。
+          </p>
+        </header>
 
-        {error && <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>}
-
-        {result && (
-          <>
-            <div style={{ marginBottom: "20px" }}>
-              <p>
-                <strong>地域:</strong> {result.location}
-              </p>
-              <p>
-                <strong>データ件数:</strong> {result.data.length}
-              </p>
-            </div>
-
-            <div style={{ marginBottom: "20px" }}>
-              <button onClick={handleDownload} style={{ marginRight: "10px", padding: "8px 16px" }}>
-                JSONをダウンロード
-              </button>
-              <button onClick={() => setShowJson(!showJson)} style={{ padding: "8px 16px" }}>
-                {showJson ? "グラフを表示" : "JSONを表示"}
-              </button>
-            </div>
-
-            {showJson ? (
-              <div>
-                <h2>JSON データ</h2>
-                <pre
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    borderRadius: "4px",
-                    maxHeight: "400px",
-                    overflowY: "auto",
-                  }}
-                >
-                  {JSON.stringify(result, null, 2)}
-                </pre>
-              </div>
-            ) : (
-              <div>
-                <MetricsSelector
-                  availableMetrics={getAvailableMetrics()}
-                  selectedMetrics={selectedMetrics}
-                  onMetricsChange={setSelectedMetrics}
+        <Card>
+          <CardHeader>
+            <CardTitle>データの読み込み</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="flex-1 w-full max-w-sm">
+                <Input
+                  type="file"
+                  name="csv"
+                  id="csv"
+                  ref={csvRef}
+                  accept=".csv"
+                  className="cursor-pointer"
                 />
-                <WeatherGraph data={result.data} selectedMetrics={selectedMetrics} />
               </div>
-            )}
-          </>
-        )}
+              <Button onClick={handleClick}>変換する</Button>
+            </div>
+            {error && <p className="text-red-500 font-medium mt-4 text-sm">{error}</p>}
+          </CardContent>
+        </Card>
+
+        {result && <WeatherResultView result={result} onDownload={handleDownload} />}
       </div>
-    </>
+    </div>
   );
 }
 
