@@ -6,9 +6,7 @@ import {
   type WeatherValue,
 } from "../schema/json";
 
-export const transformAndValidateWeather = (
-  csvString: string,
-): WeatherJsonOutput => {
+export const transformAndValidateWeather = (csvString: string): WeatherJsonOutput => {
   const { data: rawRows } = Papa.parse<string[]>(csvString, {
     header: false,
     skipEmptyLines: false,

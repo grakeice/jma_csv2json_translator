@@ -180,3 +180,71 @@
     border-right-color: var(--border);
   }
 }
+
+button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
+
+button:active {
+  background-color: #d0d0d0;
+}
+
+input[type="file"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+label {
+  cursor: pointer;
+  user-select: none;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+h2 {
+  color: #555;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+h3 {
+  color: #666;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+pre {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  overflow-x: auto;
+  font-size: 12px;
+}
+
+p {
+  line-height: 1.6;
+  margin: 10px 0;
+}
