@@ -7,106 +7,106 @@ import { cn } from "../lib/utils";
 import type { WeatherJsonOutput } from "../schema/json";
 
 interface WeatherResultViewProps {
-  result: WeatherJsonOutput;
-  onDownload: () => void;
+	result: WeatherJsonOutput;
+	onDownload: () => void;
 }
 
 export function WeatherResultView({ result, onDownload }: WeatherResultViewProps) {
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([
-    "avg_temp",
-    "max_temp",
-    "min_temp",
-  ]);
-  const [strokeWidth, setStrokeWidth] = useState(1);
-  const [showJson, setShowJson] = useState(false);
+	const [selectedMetrics, setSelectedMetrics] = useState<string[]>([
+		"avg_temp",
+		"max_temp",
+		"min_temp",
+	]);
+	const [strokeWidth, setStrokeWidth] = useState(1);
+	const [showJson, setShowJson] = useState(false);
 
-  const getAvailableMetrics = () => {
-    if (!result || result.data.length === 0) return [];
-    const metricsSet = new Set<string>();
-    Object.keys(result.data[0]).forEach((key) => {
-      if (key !== "date") {
-        metricsSet.add(key);
-      }
-    });
-    return Array.from(metricsSet);
-  };
+	const getAvailableMetrics = () => {
+		if (!result || result.data.length === 0) return [];
+		const metricsSet = new Set<string>();
+		Object.keys(result.data[0]).forEach((key) => {
+			if (key !== "date") {
+				metricsSet.add(key);
+			}
+		});
+		return Array.from(metricsSet);
+	};
 
-  return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
-      <div className="flex flex-col sm:flex-row gap-6 justify-between items-start sm:items-center bg-white p-6 rounded-[2rem] border border-gray-200">
-        <div className="flex flex-wrap gap-8 items-center px-4">
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">地域</p>
-            <p className="text-xl font-bold text-gray-800">{result.location}</p>
-          </div>
-          <div className="w-px h-8 bg-gray-200 hidden sm:block" />
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              データ期間
-            </p>
-            <p className="text-xl font-bold text-gray-800">{result.data.length} 日間</p>
-          </div>
-        </div>
-        <div className="flex gap-3 w-full sm:w-auto">
-          <Button
-            variant="outline"
-            onClick={() => setShowJson(!showJson)}
-            className="flex-1 sm:flex-none border-gray-200 text-gray-500 hover:bg-white rounded-xl px-6 h-12 text-xs font-bold uppercase tracking-wider transition-all shadow-sm"
-          >
-            {showJson ? "グラフを見る" : "JSONを表示"}
-          </Button>
-          <Button
-            onClick={onDownload}
-            className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white rounded-xl px-6 h-12 text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-blue-100 active:scale-95"
-          >
-            ダウンロード
-          </Button>
-        </div>
-      </div>
+	return (
+		<div className="animate-in fade-in slide-in-from-bottom-8 space-y-10 duration-700">
+			<div className="flex flex-col items-start justify-between gap-6 rounded-[2rem] border border-gray-200 bg-white p-6 sm:flex-row sm:items-center">
+				<div className="flex flex-wrap items-center gap-8 px-4">
+					<div className="space-y-1">
+						<p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">地域</p>
+						<p className="text-xl font-bold text-gray-800">{result.location}</p>
+					</div>
+					<div className="hidden h-8 w-px bg-gray-200 sm:block" />
+					<div className="space-y-1">
+						<p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">
+							データ期間
+						</p>
+						<p className="text-xl font-bold text-gray-800">{result.data.length} 日間</p>
+					</div>
+				</div>
+				<div className="flex w-full gap-3 sm:w-auto">
+					<Button
+						variant="outline"
+						onClick={() => setShowJson(!showJson)}
+						className="h-12 flex-1 rounded-xl border-gray-200 px-6 text-xs font-bold tracking-wider text-gray-500 uppercase shadow-sm transition-all hover:bg-white sm:flex-none"
+					>
+						{showJson ? "グラフを見る" : "JSONを表示"}
+					</Button>
+					<Button
+						onClick={onDownload}
+						className="h-12 flex-1 rounded-xl bg-blue-500 px-6 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-blue-100 transition-all hover:bg-blue-600 active:scale-95 sm:flex-none"
+					>
+						ダウンロード
+					</Button>
+				</div>
+			</div>
 
-      <div className={cn(!showJson && "hidden")}>
-        <div className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white transition-all">
-          <div className="px-8 py-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-              JSON Output
-            </h3>
-          </div>
-          <div className="p-4 sm:p-8 pt-0 sm:pt-0">
-            <div className="rounded-2xl overflow-hidden border border-gray-800">
-              <Suspense
-                fallback={
-                  <div className="h-[600px] flex items-center justify-center bg-[#0d1117] text-sky-400 animate-pulse font-mono text-xs italic tracking-widest">
-                    Compiling Syntax Highlighter...
-                  </div>
-                }
-              >
-                <JsonHighlighter data={result} />
-              </Suspense>
-            </div>
-          </div>
-        </div>
-      </div>
+			<div className={cn(!showJson && "hidden")}>
+				<div className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white transition-all">
+					<div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/50 px-8 py-5">
+						<h3 className="text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase">
+							JSON Output
+						</h3>
+					</div>
+					<div className="p-4 pt-0 sm:p-8 sm:pt-0">
+						<div className="overflow-hidden rounded-2xl border border-gray-800">
+							<Suspense
+								fallback={
+									<div className="flex h-[600px] animate-pulse items-center justify-center bg-[#0d1117] font-mono text-xs tracking-widest text-sky-400 italic">
+										Compiling Syntax Highlighter...
+									</div>
+								}
+							>
+								<JsonHighlighter data={result} />
+							</Suspense>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <div className={cn(showJson && "hidden")}>
-        <div className="space-y-10">
-          <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 transition-all">
-            <MetricsSelector
-              availableMetrics={getAvailableMetrics()}
-              selectedMetrics={selectedMetrics}
-              onMetricsChange={setSelectedMetrics}
-              strokeWidth={strokeWidth}
-              onStrokeWidthChange={setStrokeWidth}
-            />
-            <div className="mt-6 pt-6 border-t border-gray-50">
-              <WeatherGraph
-                data={result.data}
-                selectedMetrics={selectedMetrics}
-                strokeWidth={strokeWidth}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+			<div className={cn(showJson && "hidden")}>
+				<div className="space-y-10">
+					<div className="rounded-[2.5rem] border border-gray-200 bg-white p-8 transition-all">
+						<MetricsSelector
+							availableMetrics={getAvailableMetrics()}
+							selectedMetrics={selectedMetrics}
+							onMetricsChange={setSelectedMetrics}
+							strokeWidth={strokeWidth}
+							onStrokeWidthChange={setStrokeWidth}
+						/>
+						<div className="mt-6 border-t border-gray-50 pt-6">
+							<WeatherGraph
+								data={result.data}
+								selectedMetrics={selectedMetrics}
+								strokeWidth={strokeWidth}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }
