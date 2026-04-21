@@ -65,22 +65,36 @@ const CustomTooltip = ({ active, payload, label, selectedTextMetrics }: CustomTo
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg text-sm min-w-[180px]">
-        <p className="font-bold text-gray-900 mb-2 border-b pb-1">{label}</p>
-        <div className="space-y-1.5">
+      <div className="bg-white p-4 border border-gray-200 rounded-2xl text-xs min-w-[200px] animate-in fade-in zoom-in-95 duration-200">
+        <p className="font-black text-gray-400 uppercase tracking-widest mb-3 border-b border-gray-50 pb-2 flex justify-between">
+          <span>Date</span>
+          <span className="text-gray-900">{label}</span>
+        </p>
+        <div className="space-y-2.5">
           {selectedTextMetrics.map((metric: string) => (
-            <div key={metric} className="flex justify-between gap-4">
-              <span className="text-gray-500">{metricLabels[metric]}</span>
-              <span className="font-medium text-gray-900">{data[metric] || "-"}</span>
+            <div key={metric} className="flex justify-between gap-6 items-center">
+              <span className="text-gray-400 font-bold uppercase tracking-tight text-[10px]">
+                {metricLabels[metric]}
+              </span>
+              <span className="font-bold text-gray-800 bg-gray-50 px-2 py-0.5 rounded-lg">
+                {data[metric] || "-"}
+              </span>
             </div>
           ))}
           {payload.map((entry, index) => (
-            <div key={`item-${index}`} className="flex justify-between gap-4">
-              <span style={{ color: entry.color }}>{entry.name}</span>
-              <span className="font-medium text-gray-900">
+            <div key={`item-${index}`} className="flex justify-between gap-6 items-center">
+              <span
+                className="font-bold uppercase tracking-tight text-[10px]"
+                style={{ color: entry.color }}
+              >
+                {entry.name}
+              </span>
+              <span className="font-black text-gray-900">
                 {entry.value}
-                {temperatureMetrics.includes(entry.dataKey) ? "℃" : ""}
-                {precipitationMetrics.includes(entry.dataKey) ? "mm" : ""}
+                <span className="text-[10px] ml-0.5 font-bold text-gray-400">
+                  {temperatureMetrics.includes(entry.dataKey) ? "℃" : ""}
+                  {precipitationMetrics.includes(entry.dataKey) ? "mm" : ""}
+                </span>
               </span>
             </div>
           ))}
@@ -91,11 +105,35 @@ const CustomTooltip = ({ active, payload, label, selectedTextMetrics }: CustomTo
   return null;
 };
 
+interface CustomTravellerProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+const renderCustomTraveller = ({ x, y, width, height }: CustomTravellerProps) => {
+  return (
+    <rect
+      x={x + width / 2 - 1.5}
+      y={y}
+      width={3}
+      height={height}
+      fill="#94a3b8"
+      stroke="none"
+      rx={1.5}
+      className="hover:fill-blue-500 cursor-ew-resize transition-colors duration-200"
+    />
+  );
+};
+
 export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGraphProps) {
   if (selectedMetrics.length === 0) {
     return (
-      <div className="flex items-center justify-center h-48 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-        <p className="text-gray-500">グラフを表示するメトリクスを選択してください</p>
+      <div className="flex items-center justify-center h-48 bg-gray-50/50 rounded-[2rem] border border-dashed border-gray-200">
+        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest italic">
+          Please select metrics to visualize
+        </p>
       </div>
     );
   }
@@ -136,35 +174,42 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
   const labelInterval = Math.max(1, Math.floor(transformedData.length / 12));
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       {tempMetrics.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <span className="w-1 h-6 bg-blue-600 rounded-full" />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+          <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-4">
+            <span className="w-8 h-px bg-gray-100" />
             気温推移
+            <span className="flex-1 h-px bg-gray-100" />
           </h3>
-          <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+          <div className="h-[400px] w-full focus:outline-none [&_*]:outline-none">
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={transformedData} margin={{ top: 0, right: 30, left: 0, bottom: 40 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                 <XAxis
                   dataKey="dateStr"
                   interval={labelInterval}
-                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tick={{ fill: "#9ca3af", fontSize: 10, fontWeight: 700 }}
                   tickMargin={10}
+                  axisLine={{ stroke: "#f3f4f6" }}
                 />
                 <YAxis
-                  label={{
-                    value: "気温 (℃)",
-                    angle: -90,
-                    position: "insideLeft",
-                    fill: "#6b7280",
-                    offset: -5,
-                  }}
-                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tick={{ fill: "#9ca3af", fontSize: 10, fontWeight: 700 }}
+                  axisLine={{ stroke: "#f3f4f6" }}
+                  tickMargin={10}
                 />
                 <Tooltip content={<CustomTooltip selectedTextMetrics={selectedTextMetrics} />} />
-                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                <Legend
+                  verticalAlign="top"
+                  align="right"
+                  height={24}
+                  iconType="circle"
+                  formatter={(value) => (
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                      {value}
+                    </span>
+                  )}
+                />
                 {tempMetrics.map((metric, idx) => (
                   <Line
                     key={metric}
@@ -174,10 +219,18 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
                     strokeWidth={strokeWidth}
                     name={metricLabels[metric] || metric}
                     dot={false}
-                    activeDot={{ r: 6, strokeWidth: 0 }}
+                    activeDot={{ r: 4, strokeWidth: 0 }}
                   />
                 ))}
-                <Brush dataKey="dateStr" height={30} stroke="#cbd5e1" fill="#f8fafc" />
+                <Brush
+                  dataKey="dateStr"
+                  height={24}
+                  stroke="#cbd5e1"
+                  fill="#f8fafc"
+                  travellerWidth={10}
+                  traveller={renderCustomTraveller}
+                  gap={50}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -185,46 +238,62 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
       )}
 
       {precipMetrics.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <span className="w-1 h-6 bg-blue-600 rounded-full" />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+          <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-4 text-left">
+            <span className="w-8 h-px bg-gray-100" />
             降水量
+            <span className="flex-1 h-px bg-gray-100" />
           </h3>
-          <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+          <div className="h-[400px] w-full focus:outline-none [&_*]:outline-none">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={transformedData} margin={{ top: 0, right: 30, left: 0, bottom: 40 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                 <XAxis
                   dataKey="dateStr"
                   interval={labelInterval}
-                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tick={{ fill: "#9ca3af", fontSize: 10, fontWeight: 700 }}
                   tickMargin={10}
+                  axisLine={{ stroke: "#f3f4f6" }}
                 />
                 <YAxis
-                  label={{
-                    value: "降水量 (mm)",
-                    angle: -90,
-                    position: "insideLeft",
-                    fill: "#6b7280",
-                    offset: -5,
-                  }}
-                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tick={{ fill: "#9ca3af", fontSize: 10, fontWeight: 700 }}
+                  axisLine={{ stroke: "#f3f4f6" }}
+                  tickMargin={10}
                 />
                 <Tooltip
-                  cursor={{ fill: "#f3f4f6" }}
+                  cursor={{ fill: "#fafafa" }}
                   content={<CustomTooltip selectedTextMetrics={selectedTextMetrics} />}
                 />
-                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                <Legend
+                  verticalAlign="top"
+                  align="right"
+                  height={24}
+                  iconType="circle"
+                  formatter={(value) => (
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                      {value}
+                    </span>
+                  )}
+                />
                 {precipMetrics.map((metric, idx) => (
                   <Bar
                     key={metric}
                     dataKey={metric}
                     fill={COLORS[(tempMetrics.length + idx) % COLORS.length]}
-                    radius={[4, 4, 0, 0]}
+                    radius={[2, 2, 0, 0]}
                     name={metricLabels[metric] || metric}
+                    maxBarSize={40}
                   />
                 ))}
-                <Brush dataKey="dateStr" height={30} stroke="#cbd5e1" fill="#f8fafc" />
+                <Brush
+                  dataKey="dateStr"
+                  height={24}
+                  stroke="#cbd5e1"
+                  fill="#f8fafc"
+                  travellerWidth={10}
+                  traveller={renderCustomTraveller}
+                  gap={50}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -232,24 +301,40 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
       )}
 
       {otherMetrics.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <span className="w-1 h-6 bg-blue-600 rounded-full" />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+          <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-4 text-left">
+            <span className="w-8 h-px bg-gray-100" />
             その他のメトリクス
+            <span className="flex-1 h-px bg-gray-100" />
           </h3>
-          <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+          <div className="h-[400px] w-full focus:outline-none [&_*]:outline-none">
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={transformedData} margin={{ top: 0, right: 30, left: 0, bottom: 40 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                 <XAxis
                   dataKey="dateStr"
                   interval={labelInterval}
-                  tick={{ fill: "#6b7280", fontSize: 12 }}
+                  tick={{ fill: "#9ca3af", fontSize: 10, fontWeight: 700 }}
+                  tickMargin={10}
+                  axisLine={{ stroke: "#f3f4f6" }}
+                />
+                <YAxis
+                  tick={{ fill: "#9ca3af", fontSize: 10, fontWeight: 700 }}
+                  axisLine={{ stroke: "#f3f4f6" }}
                   tickMargin={10}
                 />
-                <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
                 <Tooltip content={<CustomTooltip selectedTextMetrics={selectedTextMetrics} />} />
-                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                <Legend
+                  verticalAlign="top"
+                  align="right"
+                  height={24}
+                  iconType="circle"
+                  formatter={(value) => (
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                      {value}
+                    </span>
+                  )}
+                />
                 {otherMetrics.map((metric, idx) => (
                   <Line
                     key={metric}
@@ -261,10 +346,18 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
                     strokeWidth={strokeWidth}
                     name={metricLabels[metric] || metric}
                     dot={false}
-                    activeDot={{ r: 6, strokeWidth: 0 }}
+                    activeDot={{ r: 4, strokeWidth: 0 }}
                   />
                 ))}
-                <Brush dataKey="dateStr" height={30} stroke="#cbd5e1" fill="#f8fafc" />
+                <Brush
+                  dataKey="dateStr"
+                  height={24}
+                  stroke="#cbd5e1"
+                  fill="#f8fafc"
+                  travellerWidth={10}
+                  traveller={renderCustomTraveller}
+                  gap={50}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -272,50 +365,51 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
       )}
 
       {selectedTextMetrics.length > 0 && (
-        <div className="pt-6 border-t border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <span className="w-1 h-6 bg-blue-600 rounded-full" />
+        <div className="pt-12 border-t border-gray-50 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400">
+          <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-4">
+            <span className="w-8 h-px bg-gray-100" />
             天気概況
+            <span className="flex-1 h-px bg-gray-100" />
           </h3>
-          <div className="overflow-hidden border border-gray-200 rounded-xl shadow-sm bg-white">
-            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50 sticky top-0 z-10">
+          <div className="overflow-hidden border border-gray-200 rounded-[2rem] bg-white">
+            <div className="max-h-[500px] overflow-y-auto overflow-x-auto custom-scrollbar">
+              <table className="min-w-full divide-y divide-gray-50">
+                <thead className="bg-gray-50/50 sticky top-0 z-10 backdrop-blur-md">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50">
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
                       日付
                     </th>
                     {selectedTextMetrics.map((metric) => (
                       <th
                         key={metric}
-                        className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50"
+                        className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
                       >
                         {metricLabels[metric]}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-100">
+                <tbody className="bg-white divide-y divide-gray-50">
                   {transformedData.map((dataPoint, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr key={idx} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-8 py-5 whitespace-nowrap text-xs font-bold text-gray-400 group-hover:text-gray-900 transition-colors">
                         {dataPoint.dateStr}
                       </td>
                       {selectedTextMetrics.map((metric) => (
                         <td
                           key={metric}
-                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
+                          className="px-8 py-5 whitespace-nowrap text-xs text-gray-600"
                         >
                           <span
                             className={cn(
-                              "px-2 py-1 rounded-md text-xs font-medium",
+                              "px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all",
                               dataPoint[metric]?.toString().includes("雨")
-                                ? "bg-blue-50 text-blue-700"
+                                ? "bg-blue-50 text-blue-500 border border-blue-100/50"
                                 : dataPoint[metric]?.toString().includes("晴")
-                                  ? "bg-orange-50 text-orange-700"
+                                  ? "bg-orange-50 text-orange-500 border border-orange-100/50"
                                   : dataPoint[metric]?.toString().includes("曇")
-                                    ? "bg-gray-100 text-gray-700"
-                                    : "bg-gray-50 text-gray-600",
+                                    ? "bg-gray-50 text-gray-500 border border-gray-100/50"
+                                    : "bg-gray-50/50 text-gray-400 border border-transparent",
                             )}
                           >
                             {dataPoint[metric] || "-"}

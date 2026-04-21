@@ -159,38 +159,36 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
   };
 
   return (
-    <div className="space-y-2">
+    <div
+      ref={parentRef}
+      className="bg-[#0d1117] h-[600px] overflow-auto scrollbar-thin scrollbar-thumb-gray-700 relative"
+    >
       <div
-        ref={parentRef}
-        className="bg-[#0d1117] rounded-lg border border-gray-800 h-[600px] overflow-auto scrollbar-thin scrollbar-thumb-gray-700 relative"
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: "100%",
+          position: "relative",
+        }}
       >
-        <div
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => (
-            <div
-              key={virtualRow.index}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: `${virtualRow.size}px`,
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-              className="px-4 text-[11px] font-mono whitespace-pre flex items-center hover:bg-white/5 border-b border-transparent"
-            >
-              <span className="inline-block w-10 mr-4 text-gray-600 text-right select-none border-r border-gray-800 pr-2 shrink-0">
-                {virtualRow.index + 1}
-              </span>
-              <code className="block min-w-max">{renderHighlightedLine(virtualRow.index)}</code>
-            </div>
-          ))}
-        </div>
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+          <div
+            key={virtualRow.index}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: `${virtualRow.size}px`,
+              transform: `translateY(${virtualRow.start}px)`,
+            }}
+            className="px-4 text-[11px] font-mono whitespace-pre flex items-center hover:bg-white/5 border-b border-transparent"
+          >
+            <span className="inline-block w-10 mr-4 text-gray-600 text-right select-none border-r border-gray-800 pr-2 shrink-0">
+              {virtualRow.index + 1}
+            </span>
+            <code className="block min-w-max">{renderHighlightedLine(virtualRow.index)}</code>
+          </div>
+        ))}
       </div>
     </div>
   );
