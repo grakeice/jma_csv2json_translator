@@ -3,6 +3,7 @@ import { MetricsSelector } from "./MetricsSelector";
 import { WeatherGraph } from "./WeatherGraph";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { JsonHighlighter } from "./JsonHighlighter";
 import type { WeatherJsonOutput } from "../schema/json";
 
 interface WeatherResultViewProps {
@@ -60,9 +61,7 @@ export function WeatherResultView({ result, onDownload }: WeatherResultViewProps
             <CardTitle>JSON データ</CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="bg-gray-900 text-gray-50 p-4 rounded-lg overflow-auto max-h-[600px] text-xs font-mono">
-              {JSON.stringify(result, null, 2)}
-            </pre>
+            <JsonHighlighter data={result} />
           </CardContent>
         </Card>
       ) : (

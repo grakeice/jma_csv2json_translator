@@ -8,7 +8,8 @@
     "build": "tsc -b && vp build",
     "lint": "eslint .",
     "preview": "vp preview",
-    "prepare": "vp config"
+    "prepare": "vp config",
+    "postinstall": "cp node_modules/web-tree-sitter/web-tree-sitter.wasm public/tree-sitter.wasm && cp node_modules/tree-sitter-json/tree-sitter-json.wasm public/"
   },
   "dependencies": {
     "encoding-japanese": "^2.2.0",
@@ -16,6 +17,8 @@
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "recharts": "^3.8.1",
+    "tree-sitter-json": "^0.24.8",
+    "web-tree-sitter": "^0.26.8",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -51,6 +54,7 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "sharp",
+      "tree-sitter-json",
       "workerd"
     ]
   }
