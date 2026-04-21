@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vp dev",
     "build": "tsc -b && vp build",
-    "lint": "eslint .",
+    "lint": "vp lint .",
     "preview": "vp preview",
     "prepare": "vp config",
     "postinstall": "cp node_modules/web-tree-sitter/web-tree-sitter.wasm public/tree-sitter.wasm && cp node_modules/tree-sitter-json/tree-sitter-json.wasm public/"
@@ -35,7 +35,6 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",

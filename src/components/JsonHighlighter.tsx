@@ -1,26 +1,48 @@
-import { useEffect, useState, useRef, type ReactNode, useMemo } from "react";
+import { use, useMemo, useRef, type ReactNode } from "react";
 import * as TreeSitter from "web-tree-sitter";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 // Use type-only imports for types, while keeping TreeSitter for values
-import type { Parser as ParserType, Node, Tree } from "web-tree-sitter";
+import type { Node } from "web-tree-sitter";
 
 const { Parser, Language } = TreeSitter;
 
 interface JsonHighlighterProps {
-  data: any;
+  data: unknown;
 }
 
-let isInitialized = false;
-let initPromise: Promise<void> | null = null;
+// Global promise for initialization to be used with React 19 `use()`
+let langPromise: Promise<TreeSitter.Language> | null = null;
+
+function getJsonLanguage() {
+  if (!langPromise) {
+    langPromise = (async () => {
+      await Parser.init({
+        locateFile(scriptName: string) {
+          return `/${scriptName}`;
+        },
+      });
+      return await Language.load("/tree-sitter-json.wasm");
+    })();
+  }
+  return langPromise;
+}
 
 export function JsonHighlighter({ data }: JsonHighlighterProps) {
+  // Suspend until language is loaded (React 19)
+  const JSON_LANG = use(getJsonLanguage());
+
   const jsonString = useMemo(() => JSON.stringify(data, null, 2), [data]);
   const lines = useMemo(() => jsonString.split("\n"), [jsonString]);
 
-  const [tree, setTree] = useState<Tree | null>(null);
-  const parserRef = useRef<ParserType | null>(null);
   const parentRef = useRef<HTMLDivElement>(null);
+
+  // Sync parsing in render path using useMemo
+  const tree = useMemo(() => {
+    const parser = new Parser();
+    parser.setLanguage(JSON_LANG);
+    return parser.parse(jsonString);
+  }, [JSON_LANG, jsonString]);
 
   const rowVirtualizer = useVirtualizer({
     count: lines.length,
@@ -28,49 +50,6 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
     estimateSize: () => 18,
     overscan: 10,
   });
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function initParser() {
-      try {
-        if (!isInitialized) {
-          if (!initPromise) {
-            initPromise = Parser.init({
-              locateFile(scriptName: string) {
-                return `/${scriptName}`;
-              },
-            });
-          }
-          await initPromise;
-          isInitialized = true;
-        }
-
-        const JSON_LANG = await Language.load("/tree-sitter-json.wasm");
-        const parser = new Parser();
-        parser.setLanguage(JSON_LANG);
-
-        if (isMounted) {
-          parserRef.current = parser;
-          const newTree = parser.parse(jsonString);
-          setTree(newTree);
-        }
-      } catch (e) {
-        console.error("Failed to initialize tree-sitter:", e);
-      }
-    }
-
-    if (!parserRef.current) {
-      void initParser();
-    } else {
-      const newTree = parserRef.current.parse(jsonString);
-      setTree(newTree);
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [jsonString]);
 
   function getClassName(node: Node): string {
     const type = node.type;
@@ -181,11 +160,6 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
 
   return (
     <div className="space-y-2">
-      <div className="flex justify-between items-center text-[10px] text-gray-500 uppercase tracking-widest font-sans">
-        <span>JSON SYNTAX HIGHLIGHTER (LAZY & VIRTUAL)</span>
-        {!tree && <span className="animate-pulse text-sky-400">Parsing...</span>}
-      </div>
-
       <div
         ref={parentRef}
         className="bg-[#0d1117] rounded-lg border border-gray-800 h-[600px] overflow-auto scrollbar-thin scrollbar-thumb-gray-700 relative"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { MetricsSelector } from "./MetricsSelector";
 import { WeatherGraph } from "./WeatherGraph";
 import { Button } from "./ui/button";
@@ -61,7 +61,15 @@ export function WeatherResultView({ result, onDownload }: WeatherResultViewProps
             <CardTitle>JSON データ</CardTitle>
           </CardHeader>
           <CardContent>
-            <JsonHighlighter data={result} />
+            <Suspense
+              fallback={
+                <div className="h-[600px] flex items-center justify-center bg-[#0d1117] rounded-lg border border-gray-800 text-sky-400 animate-pulse font-mono text-xs">
+                  Initializing Syntax Highlighter...
+                </div>
+              }
+            >
+              <JsonHighlighter data={result} />
+            </Suspense>
           </CardContent>
         </Card>
       ) : (

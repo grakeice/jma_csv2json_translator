@@ -83,7 +83,7 @@ export function WeatherGraph({ data, selectedMetrics }: WeatherGraphProps) {
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-4">気温推移</h3>
           <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={350}>
               <LineChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                 <XAxis
@@ -133,7 +133,7 @@ export function WeatherGraph({ data, selectedMetrics }: WeatherGraphProps) {
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-4">降水量</h3>
           <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={350}>
               <BarChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                 <XAxis
@@ -181,7 +181,7 @@ export function WeatherGraph({ data, selectedMetrics }: WeatherGraphProps) {
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-4">その他のメトリクス</h3>
           <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={350}>
               <LineChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                 <XAxis
