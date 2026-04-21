@@ -4,12 +4,16 @@ interface MetricsSelectorProps {
   availableMetrics: string[];
   selectedMetrics: string[];
   onMetricsChange: (metrics: string[]) => void;
+  strokeWidth: number;
+  onStrokeWidthChange: (width: number) => void;
 }
 
 export function MetricsSelector({
   availableMetrics,
   selectedMetrics,
   onMetricsChange,
+  strokeWidth,
+  onStrokeWidthChange,
 }: MetricsSelectorProps) {
   const handleToggle = (metric: string) => {
     if (selectedMetrics.includes(metric)) {
@@ -34,31 +38,56 @@ export function MetricsSelector({
   };
 
   return (
-    <div className="my-6">
-      <h3 className="text-lg font-medium mb-3">メトリクス選択</h3>
-      <div className="flex flex-wrap gap-3">
-        {availableMetrics.map((metric) => {
-          const isSelected = selectedMetrics.includes(metric);
-          return (
-            <label
-              key={metric}
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-md border cursor-pointer transition-colors text-sm",
-                isSelected
-                  ? "bg-blue-50 border-blue-200 text-blue-700"
-                  : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50",
-              )}
-            >
-              <input
-                type="checkbox"
-                className="hidden"
-                checked={isSelected}
-                onChange={() => handleToggle(metric)}
-              />
-              {metricLabels[metric] || metric}
-            </label>
-          );
-        })}
+    <div className="space-y-6">
+      <div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+            表示メトリクス
+          </h3>
+
+          <div className="flex items-center gap-3 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-100 w-fit">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
+              線の太さ
+            </span>
+            <input
+              type="range"
+              min="1"
+              max="6"
+              step="0.5"
+              value={strokeWidth}
+              onChange={(e) => onStrokeWidthChange(parseFloat(e.target.value))}
+              className="w-24 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-400 hover:accent-blue-500 transition-colors"
+            />
+            <span className="text-[10px] font-mono text-gray-400 min-w-[24px]">
+              {strokeWidth.toFixed(1)}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {availableMetrics.map((metric) => {
+            const isSelected = selectedMetrics.includes(metric);
+            return (
+              <label
+                key={metric}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-1.5 rounded-full border cursor-pointer transition-all text-xs font-medium",
+                  isSelected
+                    ? "bg-blue-50 border-blue-200 text-blue-600 shadow-sm"
+                    : "bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:bg-gray-50",
+                )}
+              >
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  checked={isSelected}
+                  onChange={() => handleToggle(metric)}
+                />
+                {metricLabels[metric] || metric}
+              </label>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

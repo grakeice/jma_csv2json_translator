@@ -17,6 +17,7 @@ export function WeatherResultView({ result, onDownload }: WeatherResultViewProps
     "max_temp",
     "min_temp",
   ]);
+  const [strokeWidth, setStrokeWidth] = useState(2);
   const [showJson, setShowJson] = useState(false);
 
   const getAvailableMetrics = () => {
@@ -79,9 +80,15 @@ export function WeatherResultView({ result, onDownload }: WeatherResultViewProps
               availableMetrics={getAvailableMetrics()}
               selectedMetrics={selectedMetrics}
               onMetricsChange={setSelectedMetrics}
+              strokeWidth={strokeWidth}
+              onStrokeWidthChange={setStrokeWidth}
             />
             <div className="mt-8 border-t border-gray-100 pt-6">
-              <WeatherGraph data={result.data} selectedMetrics={selectedMetrics} />
+              <WeatherGraph
+                data={result.data}
+                selectedMetrics={selectedMetrics}
+                strokeWidth={strokeWidth}
+              />
             </div>
           </CardContent>
         </Card>
