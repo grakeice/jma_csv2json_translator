@@ -29,7 +29,6 @@ function getJsonLanguage() {
 }
 
 export function JsonHighlighter({ data }: JsonHighlighterProps) {
-	// Suspend until language is loaded (React 19)
 	const JSON_LANG = use(getJsonLanguage());
 
 	const jsonString = useMemo(() => JSON.stringify(data, null, 2), [data]);
@@ -37,7 +36,6 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
 
 	const parentRef = useRef<HTMLDivElement>(null);
 
-	// Sync parsing in render path using useMemo
 	const tree = useMemo(() => {
 		const parser = new Parser();
 		parser.setLanguage(JSON_LANG);
@@ -54,7 +52,6 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
 	function getClassName(node: Node): string {
 		const type = node.type;
 
-		// Correctly identify keys by checking if node belongs to the first child of a pair
 		let isKey = false;
 		let curr: Node | null = node;
 		while (curr) {
@@ -80,24 +77,24 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
 		}
 
 		if (type === '"') {
-			return isKey ? "text-sky-400 opacity-70" : "text-gray-500";
+			return isKey ? "text-blue-600 opacity-70" : "text-gray-500";
 		}
 
 		if (isKey) {
-			return "text-sky-400 font-medium";
+			return "text-blue-600 font-medium";
 		}
 
 		switch (type) {
 			case "string_content":
-				return "text-emerald-400";
+				return "text-green-600";
 			case "number":
-				return "text-amber-400";
+				return "text-amber-600";
 			case "true":
 			case "false":
 			case "null":
-				return "text-violet-400 font-bold";
+				return "text-purple-600 font-bold";
 			default:
-				return "text-gray-200";
+				return "text-gray-600";
 		}
 	}
 
@@ -161,7 +158,7 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
 	return (
 		<div
 			ref={parentRef}
-			className="scrollbar-thin scrollbar-thumb-gray-700 relative h-[600px] overflow-auto bg-[#0d1117]"
+			className="scrollbar-thin scrollbar-thumb-gray-400 relative h-[600px] overflow-auto bg-gray-50"
 		>
 			<div
 				style={{
@@ -181,12 +178,14 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
 							height: `${virtualRow.size}px`,
 							transform: `translateY(${virtualRow.start}px)`,
 						}}
-						className="flex items-center border-b border-transparent px-4 font-mono text-[11px] whitespace-pre hover:bg-white/5"
+						className="flex items-center border-b border-gray-200/30 px-4 font-mono text-[11px] whitespace-pre transition-colors hover:bg-gray-100/50"
 					>
-						<span className="mr-4 inline-block w-10 shrink-0 border-r border-gray-800 pr-2 text-right text-gray-600 select-none">
+						<span className="mr-4 inline-block w-10 shrink-0 border-r border-gray-300/50 pr-2 text-right text-gray-500 select-none">
 							{virtualRow.index + 1}
 						</span>
-						<code className="block min-w-max">{renderHighlightedLine(virtualRow.index)}</code>
+						<code className="block min-w-max text-gray-700">
+							{renderHighlightedLine(virtualRow.index)}
+						</code>
 					</div>
 				))}
 			</div>

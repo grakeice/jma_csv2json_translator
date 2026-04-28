@@ -53,20 +53,17 @@ function App() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50 p-6 font-sans text-gray-900">
+		<div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 p-6 font-sans text-gray-700">
 			<div className="mx-auto max-w-5xl space-y-10">
 				<header className="mb-12 pt-8 text-center">
-					<h1 className="text-4xl font-extrabold tracking-tight text-gray-900 text-gray-900 sm:text-5xl">
-						JMA CSV to JSON 変換ツール
+					<h1 className="text-4xl font-extrabold tracking-tight text-gray-800 sm:text-5xl">
+						JMA CSV to JSON 変換
 					</h1>
-					<p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-gray-500">
-						気象庁の過去の気象データ(CSV)をJSONに変換し、グラフで可視化します。
-					</p>
 				</header>
 
 				<div className="flex justify-center">
-					<div className="w-full max-w-xl rounded-[2rem] border border-gray-200 bg-white p-8 transition-all hover:bg-gray-50/30">
-						<h2 className="mb-6 text-center text-xs font-bold tracking-[0.2em] text-gray-400 uppercase">
+					<div className="w-full max-w-xl rounded-3xl bg-gray-100 p-8 shadow-lg shadow-gray-300/50 transition-all duration-300 hover:shadow-xl hover:shadow-gray-300/70">
+						<h2 className="mb-6 text-center text-xs font-bold tracking-[0.2em] text-gray-500 uppercase">
 							データの読み込み
 						</h2>
 						<div className="flex flex-col items-center gap-3 sm:flex-row">
@@ -77,19 +74,19 @@ function App() {
 									id="csv"
 									ref={csvRef}
 									accept=".csv"
-									className="h-auto cursor-pointer rounded-xl border-gray-200 bg-gray-50 px-4 py-6 text-sm transition-all focus:ring-blue-100"
+									className="h-auto cursor-pointer rounded-2xl bg-gray-100 px-4 py-6 text-sm shadow-inner shadow-gray-300 transition-all focus:shadow-inner focus:shadow-gray-400"
 								/>
 							</div>
 							<Button
 								onClick={handleClick}
-								className="h-auto w-full rounded-xl bg-blue-600 px-8 py-6 text-xs font-bold tracking-wider text-white uppercase shadow-lg shadow-blue-100 transition-all hover:bg-blue-700 active:scale-95 sm:w-auto"
+								className="h-auto w-full rounded-2xl px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all sm:w-auto"
 							>
-								解析を開始
+								読み込む
 							</Button>
 						</div>
 						{error && (
-							<div className="mt-4 rounded-xl border border-red-100 bg-red-50 p-3">
-								<p className="text-center text-xs font-medium text-red-500">{error}</p>
+							<div className="mt-4 rounded-2xl bg-red-100/30 p-3 shadow-inner shadow-red-200/30">
+								<p className="text-center text-xs font-medium text-red-600">{error}</p>
 							</div>
 						)}
 					</div>

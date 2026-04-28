@@ -41,12 +41,12 @@ export function MetricsSelector({
 		<div className="space-y-6">
 			<div>
 				<div className="mb-4 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-					<h3 className="text-xs font-bold tracking-widest text-gray-400 uppercase">
+					<h3 className="text-xs font-bold tracking-widest text-gray-500 uppercase">
 						表示メトリクス
 					</h3>
 
-					<div className="flex w-fit items-center gap-3 rounded-full border border-gray-100 bg-gray-50 px-3 py-1.5">
-						<span className="text-[10px] font-bold tracking-tight text-gray-400 uppercase">
+					<div className="flex w-fit items-center gap-3 rounded-2xl bg-gray-100 px-3 py-1.5 shadow-inner shadow-gray-200">
+						<span className="text-[10px] font-bold tracking-tight text-gray-500 uppercase">
 							線の太さ
 						</span>
 						<input
@@ -56,9 +56,9 @@ export function MetricsSelector({
 							step="0.5"
 							value={strokeWidth}
 							onChange={(e) => onStrokeWidthChange(parseFloat(e.target.value))}
-							className="h-1 w-24 cursor-pointer appearance-none rounded-lg bg-gray-200 accent-gray-400 transition-colors hover:accent-blue-500"
+							className="h-1 w-24 cursor-pointer appearance-none rounded-lg bg-gray-200 accent-gray-600 transition-colors hover:accent-gray-700"
 						/>
-						<span className="min-w-[24px] font-mono text-[10px] text-gray-400">
+						<span className="min-w-[24px] font-mono text-[10px] text-gray-500">
 							{strokeWidth.toFixed(1)}
 						</span>
 					</div>
@@ -70,11 +70,19 @@ export function MetricsSelector({
 						return (
 							<label
 								key={metric}
+								style={
+									!isSelected
+										? {
+												boxShadow:
+													"inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 4px rgba(150, 150, 150, 0.3)",
+											}
+										: {}
+								}
 								className={cn(
-									"flex items-center gap-2 px-3 py-1.5 rounded-full border cursor-pointer transition-all text-xs font-medium",
+									"flex items-center gap-2 px-3 py-1.5 rounded-2xl cursor-pointer transition-all text-xs font-medium",
 									isSelected
-										? "bg-blue-50 border-blue-200 text-blue-600 shadow-sm"
-										: "bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:bg-gray-50",
+										? "bg-blue-50 text-blue-700 shadow-inner shadow-gray-300"
+										: "bg-gray-100 text-gray-600",
 								)}
 							>
 								<input

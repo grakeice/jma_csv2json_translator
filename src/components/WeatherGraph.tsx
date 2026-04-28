@@ -65,18 +65,18 @@ const CustomTooltip = ({ active, payload, label, selectedTextMetrics }: CustomTo
 	if (active && payload && payload.length) {
 		const data = payload[0].payload;
 		return (
-			<div className="animate-in fade-in zoom-in-95 min-w-[200px] rounded-2xl border border-gray-200 bg-white p-4 text-xs duration-200">
-				<p className="mb-3 flex justify-between border-b border-gray-50 pb-2 font-black tracking-widest text-gray-400 uppercase">
+			<div className="animate-in fade-in zoom-in-95 min-w-[200px] rounded-2xl bg-gray-100 p-4 text-xs shadow-lg shadow-gray-300/50 duration-200">
+				<p className="mb-3 flex justify-between border-b border-gray-200/30 pb-2 font-black tracking-widest text-gray-500 uppercase">
 					<span>Date</span>
-					<span className="text-gray-900">{label}</span>
+					<span className="text-gray-800">{label}</span>
 				</p>
 				<div className="space-y-2.5">
 					{selectedTextMetrics.map((metric: string) => (
 						<div key={metric} className="flex items-center justify-between gap-6">
-							<span className="text-[10px] font-bold tracking-tight text-gray-400 uppercase">
+							<span className="text-[10px] font-bold tracking-tight text-gray-500 uppercase">
 								{metricLabels[metric]}
 							</span>
-							<span className="rounded-lg bg-gray-50 px-2 py-0.5 font-bold text-gray-800">
+							<span className="rounded-lg bg-gray-200/30 px-2 py-0.5 font-bold text-gray-700">
 								{data[metric] || "-"}
 							</span>
 						</div>
@@ -89,9 +89,9 @@ const CustomTooltip = ({ active, payload, label, selectedTextMetrics }: CustomTo
 							>
 								{entry.name}
 							</span>
-							<span className="font-black text-gray-900">
+							<span className="font-black text-gray-800">
 								{entry.value}
-								<span className="ml-0.5 text-[10px] font-bold text-gray-400">
+								<span className="ml-0.5 text-[10px] font-bold text-gray-500">
 									{temperatureMetrics.includes(entry.dataKey) ? "℃" : ""}
 									{precipitationMetrics.includes(entry.dataKey) ? "mm" : ""}
 								</span>
@@ -130,8 +130,8 @@ const renderCustomTraveller = ({ x, y, width, height }: CustomTravellerProps) =>
 export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGraphProps) {
 	if (selectedMetrics.length === 0) {
 		return (
-			<div className="flex h-48 items-center justify-center rounded-[2rem] border border-dashed border-gray-200 bg-gray-50/50">
-				<p className="text-xs font-bold tracking-widest text-gray-400 uppercase italic">
+			<div className="flex h-48 items-center justify-center rounded-2xl bg-gray-100 shadow-inner shadow-gray-200">
+				<p className="text-xs font-bold tracking-widest text-gray-500 uppercase italic">
 					Please select metrics to visualize
 				</p>
 			</div>
@@ -365,34 +365,34 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
 			)}
 
 			{selectedTextMetrics.length > 0 && (
-				<div className="animate-in fade-in slide-in-from-bottom-4 border-t border-gray-50 pt-12 delay-400 duration-700">
-					<h3 className="mb-2 flex items-center gap-4 text-xs font-black tracking-[0.3em] text-gray-400 uppercase">
-						<span className="h-px w-8 bg-gray-100" />
+				<div className="animate-in fade-in slide-in-from-bottom-4 border-t border-gray-200/30 pt-12 delay-400 duration-700">
+					<h3 className="mb-2 flex items-center gap-4 text-xs font-black tracking-[0.3em] text-gray-500 uppercase">
+						<span className="h-px w-8 bg-gray-200/30" />
 						天気概況
-						<span className="h-px flex-1 bg-gray-100" />
+						<span className="h-px flex-1 bg-gray-200/30" />
 					</h3>
-					<div className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white">
+					<div className="overflow-hidden rounded-3xl bg-gray-100 shadow-lg shadow-gray-300/50">
 						<div className="custom-scrollbar max-h-[500px] overflow-x-auto overflow-y-auto">
-							<table className="min-w-full divide-y divide-gray-50">
-								<thead className="sticky top-0 z-10 bg-gray-50/50 backdrop-blur-md">
+							<table className="min-w-full divide-y divide-gray-200/30">
+								<thead className="sticky top-0 z-10 bg-gray-100 backdrop-blur-md">
 									<tr>
-										<th className="px-8 py-5 text-left text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase">
+										<th className="px-8 py-5 text-left text-[10px] font-black tracking-[0.2em] text-gray-500 uppercase">
 											日付
 										</th>
 										{selectedTextMetrics.map((metric) => (
 											<th
 												key={metric}
-												className="px-8 py-5 text-left text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase"
+												className="px-8 py-5 text-left text-[10px] font-black tracking-[0.2em] text-gray-500 uppercase"
 											>
 												{metricLabels[metric]}
 											</th>
 										))}
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-gray-50 bg-white">
+								<tbody className="divide-y divide-gray-200/30 bg-gray-100">
 									{transformedData.map((dataPoint, idx) => (
-										<tr key={idx} className="group transition-colors hover:bg-gray-50/50">
-											<td className="px-8 py-5 text-xs font-bold whitespace-nowrap text-gray-400 transition-colors group-hover:text-gray-900">
+										<tr key={idx} className="group transition-colors hover:bg-gray-100/80">
+											<td className="px-8 py-5 text-xs font-bold whitespace-nowrap text-gray-500 transition-colors group-hover:text-gray-800">
 												{dataPoint.dateStr}
 											</td>
 											{selectedTextMetrics.map((metric) => (
@@ -402,14 +402,14 @@ export function WeatherGraph({ data, selectedMetrics, strokeWidth }: WeatherGrap
 												>
 													<span
 														className={cn(
-															"px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all",
+															"px-3 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all",
 															dataPoint[metric]?.toString().includes("雨")
-																? "bg-blue-50 text-blue-500 border border-blue-100/50"
+																? "bg-blue-100/50 text-blue-600 shadow-inner shadow-blue-200/50"
 																: dataPoint[metric]?.toString().includes("晴")
-																	? "bg-orange-50 text-orange-500 border border-orange-100/50"
+																	? "bg-amber-100/50 text-amber-600 shadow-inner shadow-amber-200/50"
 																	: dataPoint[metric]?.toString().includes("曇")
-																		? "bg-gray-50 text-gray-500 border border-gray-100/50"
-																		: "bg-gray-50/50 text-gray-400 border border-transparent",
+																		? "bg-gray-200/50 text-gray-600 shadow-inner shadow-gray-300/50"
+																		: "bg-gray-100/50 text-gray-500 shadow-inner shadow-gray-200/50",
 														)}
 													>
 														{dataPoint[metric] || "-"}
