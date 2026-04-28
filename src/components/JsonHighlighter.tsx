@@ -178,9 +178,9 @@ export function JsonHighlighter({ data }: JsonHighlighterProps) {
 							height: `${virtualRow.size}px`,
 							transform: `translateY(${virtualRow.start}px)`,
 						}}
-						className="flex items-center border-b border-gray-200/30 px-4 font-mono text-[11px] whitespace-pre transition-colors hover:bg-gray-100/50"
+						className="flex items-center px-4 font-mono text-[11px] whitespace-pre hover:bg-gray-100/30"
 					>
-						<span className="mr-4 inline-block w-10 shrink-0 border-r border-gray-300/50 pr-2 text-right text-gray-500 select-none">
+						<span className="mr-4 inline-block w-10 shrink-0 pr-2 text-right text-gray-500 select-none">
 							{virtualRow.index + 1}
 						</span>
 						<code className="block min-w-max text-gray-700">
